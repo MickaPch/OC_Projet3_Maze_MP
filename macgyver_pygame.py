@@ -15,15 +15,21 @@ def main():
     pygame.display.set_caption("test_program")
 
     # Create a surface on screen
-    screen = pygame.display.set_mode((240, 180))
+    screen = pygame.display.set_mode((600, 600))
     screen.fill((255, 200, 200))
 
     # Create a blit
     image = pygame.image.load(os.path.join(
         "Mac_Gyver_ressources/MacGyver.png"
         ))
-    screen.blit(image, (100, 100))
+    xpos = 300
+    ypos = 300
+    screen.blit(image, (xpos, ypos))
     pygame.display.flip()
+
+    # Control of move
+    step_x = 10
+    step_y = 10
 
     # Control of the loop
     running = True
@@ -32,6 +38,7 @@ def main():
     while running:
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
+
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
