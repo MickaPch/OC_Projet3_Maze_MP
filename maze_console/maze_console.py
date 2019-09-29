@@ -14,6 +14,19 @@ class Game:
         self.maze = Maze(self.carte)
         self.guardian = Guardian(self.carte)
         self.player = Player(self.carte)
+        self.needle = Item(self.carte)
+        self.tube = Item(self.carte)
+        self.ether = Item(self.carte)
+        self.bag = Bag()
+        self.objects_list = [
+            self.carte,
+            self.player,
+            self.guardian,
+            self.needle,
+            self.tube,
+            self.ether,
+            self.bag
+            ]
         self._running = True
 
     def move(self):
@@ -32,13 +45,27 @@ class Game:
 
     def on_execute(self):
         while self._running:
-            self.maze.refresh(self.carte, self.player, self.guardian)
+            self.maze.refresh(*self.objects_list)
             print(self.maze)
+            print(
+                "Bag :\nNeedle : {}\nTube : {}\nEther : {}".format(
+                    self.bag.is_needle,
+                    self.bag.is_tube,
+                    self.bag.is_ether
+                ))
             self.move()
-            self.maze.refresh(self.carte, self.player, self.guardian)
+            self.maze.refresh(*self.objects_list)
             if self.player.position == self.guardian.position:
+                if self.bag.full:
+                    print(self.maze)
+                    print("Well done !\nYou beat the guardian !")
+                else:
+                    print(self.maze)
+                    print('Game Over !!!')
+                    self._running = False
+            if self.player.position == self.carte.exit:
                 print(self.maze)
-                print('Game Over')
+                print("GREAAAAT !!! \nYou won this game !!!")
                 self._running = False
 
 
@@ -108,14 +135,32 @@ class Maze():
     def __init__(self, carte):
         self.maze_grid = copy.deepcopy(carte.grid)
 
-    def refresh(self, carte, player, guardian):
+    def refresh(self, carte, player, guardian, needle, tube, ether, bag):
         self.maze_grid = copy.deepcopy(carte.grid)
-        player_posx = player.position[0]
-        player_posy = player.position[1]
-        self.maze_grid[player_posy][player_posx] = 'P'
-        guardian_posx = guardian.position[0]
-        guardian_posy = guardian.position[1]
-        self.maze_grid[guardian_posy][guardian_posx] = 'G'
+
+        bag.control_bag(player, needle, tube, ether)
+        if bag.is_needle:
+            self.maze_grid[needle.posy][needle.posx] = " "
+        else:
+            self.maze_grid[needle.posy][needle.posx] = 'N'
+
+        if bag.is_tube:
+            self.maze_grid[tube.posy][tube.posx] = " "
+        else:
+            self.maze_grid[tube.posy][tube.posx] = 'T'
+
+        if bag.is_ether:
+            self.maze_grid[ether.posy][ether.posx] = " "
+        else:
+            self.maze_grid[ether.posy][ether.posx] = 'E'
+
+        if bag.full:
+            self.maze_grid[guardian.posy][guardian.posx] = " "
+        else:
+            self.maze_grid[guardian.posy][guardian.posx] = guardian.print
+
+        self.maze_grid[player.posy][player.posx] = player.print
+
         return self.maze_grid
 
     def print_maze(self):
@@ -133,40 +178,93 @@ class Maze():
         return self.print_maze()
 
 
-class Guardian:
-    def __init__(self, maze):
-        if maze.exit[0] == 0:
-            self.position = (maze.exit[0] + 1, maze.exit[1])
-        if maze.exit[0] == maze._len_X - 1:
-            self.position = (maze.exit[0] - 1, maze.exit[1])
-        if maze.exit[1] == 0:
-            self.position = (maze.exit[0], maze.exit[1] + 1)
-        if maze.exit[1] == maze._len_Y - 1:
-            self.position = (maze.exit[0], maze.exit[1] - 1)
+class Guardian():
+    def __init__(self, carte):
+        if carte.exit[0] == 0:
+            self.position = (carte.exit[0] + 1, carte.exit[1])
+        elif carte.exit[0] == carte._len_X - 1:
+            self.position = (carte.exit[0] - 1, carte.exit[1])
+        elif carte.exit[1] == 0:
+            self.position = (carte.exit[0], carte.exit[1] + 1)
+        elif carte.exit[1] == carte._len_Y - 1:
+            self.position = (carte.exit[0], carte.exit[1] - 1)
+        self.posx = self.position[0]
+        self.posy = self.position[1]
+        self.print = 'G'
 
 
-class Player:
+class Player():
 
     def __init__(self, carte):
         self.position = carte.entrance
+        self.posx = self.position[0]
+        self.posy = self.position[1]
+        self.print = 'P'
 
     def on_move(self, keyboard_input, carte):
         if keyboard_input == 8:
-            test_position = (self.position[0], self.position[1] - 1)
+            test_position = (self.posx, self.posy - 1)
             if test_position in carte.allowed_tiles:
                 self.position = test_position
         elif keyboard_input == 6:
-            test_position = (self.position[0] + 1, self.position[1])
+            test_position = (self.posx + 1, self.posy)
             if test_position in carte.allowed_tiles:
                 self.position = test_position
         elif keyboard_input == 5:
-            test_position = (self.position[0], self.position[1] + 1)
+            test_position = (self.posx, self.posy + 1)
             if test_position in carte.allowed_tiles:
                 self.position = test_position
         elif keyboard_input == 4:
-            test_position = (self.position[0] - 1, self.position[1])
+            test_position = (self.posx - 1, self.posy)
             if test_position in carte.allowed_tiles:
                 self.position = test_position
+        self.posx = self.position[0]
+        self.posy = self.position[1]
+
+
+class Item:
+    """Items to pick"""
+    item_list = list()
+
+    def __init__(self, carte):
+        if Item.item_list == []:
+            self.position = carte.allowed_tiles[
+                random.randint(0, len(carte.allowed_tiles) - 1)
+                ]
+            Item.item_list.append(self.position)
+        else:
+            test = True
+            while test:
+                position_test = carte.allowed_tiles[
+                    random.randint(0, len(carte.allowed_tiles) - 1)
+                ]
+                if position_test not in Item.item_list:
+                    self.position = position_test
+                    test = False
+        self.posx = self.position[0]
+        self.posy = self.position[1]
+
+
+class Bag:
+
+    def __init__(self):
+        self.is_needle = False
+        self.is_tube = False
+        self.is_ether = False
+        self.full = False
+
+    def control_bag(self, player, needle, tube, ether):
+        if (player.posx, player.posy) == (needle.posx, needle.posy):
+            self.is_needle = True
+        elif (player.posx, player.posy) == (tube.posx, tube.posy):
+            self.is_tube = True
+        elif (player.posx, player.posy) == (ether.posx, ether.posy):
+            self.is_ether = True
+
+        if self.is_needle and self.is_tube and self.is_ether:
+            self.full = True
+
+        return self.is_needle, self.is_tube, self.is_ether, self.full
 
 
 def main():
