@@ -1,0 +1,5 @@
+GRID_LENGHT = 20
+
+VOITURE = 27
+
+AVION = 50
