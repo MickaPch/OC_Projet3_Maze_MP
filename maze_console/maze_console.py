@@ -9,6 +9,9 @@ class Game:
         self._running = True
 
     def on_init(self, file):
+        """
+        Initialize the game parameters
+        """
         self.carte = Grid()
         self.carte.initialize_maze(file)
         self.maze = Maze(self.carte)
@@ -30,6 +33,9 @@ class Game:
         self._running = True
 
     def move(self):
+        """
+        Control the input.
+        """
         input_loop = True
         while input_loop:
             try:
@@ -44,6 +50,7 @@ class Game:
         # self.maze.refresh(self.player, self.guardian)
 
     def on_execute(self):
+        """Game"""
         while self._running:
             self.maze.refresh(*self.objects_list)
             print(self.maze)
@@ -109,6 +116,9 @@ class Grid:
         return self.grid, self.forbidden_tiles, self.allowed_tiles
 
     def initialize_exits(self):
+        """
+        Initialize the entrance & exit positions
+        """
         exits = []
         for position in self.allowed_tiles:
             if position[0] == 0:
@@ -126,16 +136,27 @@ class Grid:
         return self.entrance, self.exit
 
     def initialize_maze(self, file):
+        """
+        Function 2 in 1
+        """
         self.initialize_grid(file)
         self.initialize_exits()
 
 
 class Maze():
-
+    """
+    Affichage de la grille de jeu
+    """
     def __init__(self, carte):
+        """
+        Fond de la carte depuis Grid (qui importe depuis fichier externe).
+        """
         self.maze_grid = copy.deepcopy(carte.grid)
 
     def refresh(self, carte, player, guardian, needle, tube, ether, bag):
+        """
+        Rafraichissement de l'affichage de la grille de jeu.
+        """
         self.maze_grid = copy.deepcopy(carte.grid)
 
         bag.control_bag(player, needle, tube, ether)
@@ -180,6 +201,9 @@ class Maze():
 
 class Guardian():
     def __init__(self, carte):
+        """
+        Initialisation de la position du gardien
+        """
         if carte.exit[0] == 0:
             self.position = (carte.exit[0] + 1, carte.exit[1])
         elif carte.exit[0] == carte._len_X - 1:
@@ -196,12 +220,18 @@ class Guardian():
 class Player():
 
     def __init__(self, carte):
+        """
+        Initialisation de la position de départ du joueur et de son affichage.
+        """
         self.position = carte.entrance
         self.posx = self.position[0]
         self.posy = self.position[1]
         self.print = 'P'
 
     def on_move(self, keyboard_input, carte):
+        """
+        Contrôle si le mouvement est possible ou non.
+        """
         if keyboard_input == 8:
             test_position = (self.posx, self.posy - 1)
             if test_position in carte.allowed_tiles:
@@ -224,9 +254,14 @@ class Player():
 
 class Item:
     """Items to pick"""
+    # Ajouter sous-classes pour chaque item pour
+    # personnaliser les blit dans pygame
     item_list = list()
 
     def __init__(self, carte):
+        """
+        Position de départ aléatoire dans la liste des cases autorisées
+        """
         if Item.item_list == []:
             self.position = carte.allowed_tiles[
                 random.randint(0, len(carte.allowed_tiles) - 1)
@@ -248,12 +283,18 @@ class Item:
 class Bag:
 
     def __init__(self):
+        """
+        Au départ : sac vide
+        """
         self.is_needle = False
         self.is_tube = False
         self.is_ether = False
         self.full = False
 
     def control_bag(self, player, needle, tube, ether):
+        """
+        Contrôle si le joueur ramasse un objet
+        """
         if (player.posx, player.posy) == (needle.posx, needle.posy):
             self.is_needle = True
         elif (player.posx, player.posy) == (tube.posx, tube.posy):
@@ -261,6 +302,7 @@ class Bag:
         elif (player.posx, player.posy) == (ether.posx, ether.posy):
             self.is_ether = True
 
+        # Contrôle si le sac est plein
         if self.is_needle and self.is_tube and self.is_ether:
             self.full = True
 
@@ -268,10 +310,12 @@ class Bag:
 
 
 def main():
-
-    jeu = Game()
-    jeu.on_init('map.txt')
-    jeu.on_execute()
+    """
+    Fonction du jeu
+    """
+    jeu = Game()            # Création du jeu
+    jeu.on_init('map.txt')  # Initialisation et import de la carte
+    jeu.on_execute()        # Boucle de jeu
 
 
 if __name__ == "__main__":
