@@ -1,5 +1,4 @@
-# Rédaction du jeu de labyrinthe en console sans pygame
-from maze_pygame.classes.game import Game
+from classes.game import Game
 
 
 def main():
@@ -9,7 +8,7 @@ def main():
     # Création du jeu
     jeu = Game()
     # Initialisation et import de la carte
-    jeu.on_init('maze_pygame/ressources/map.txt')
+    jeu.on_init('ressources/map.txt')
     # Boucle de jeu
     jeu.on_execute()
 

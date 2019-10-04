@@ -1,3 +1,4 @@
+import pygame
 from classes.grid import Grid
 from classes.maze import Maze
 from classes.guardian import Guardian
@@ -10,12 +11,16 @@ class Game:
     """Game loop"""
     def __init__(self):
         self._running = True
+        # self._display_surf = None
+        # self.width = 600
+        # self.height = 600
+        # self.size = (self.width, self.height)
 
     def on_init(self, file):
         """
         Initialize the game parameters
         """
-        pygame.init()           # Initialization of pygame
+        # pygame.init()           # Initialization of pygame
 
         self.carte = Grid()
         self.carte.initialize_maze(file)
