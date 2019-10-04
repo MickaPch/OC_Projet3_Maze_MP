@@ -2,9 +2,9 @@ import random
 
 
 class Item:
-    """Items to pick"""
-    # Ajouter sous-classes pour chaque item pour
-    # personnaliser les blit dans pygame
+    """
+    Items to pick. Initialize 3 items from different positions.
+    """
     list_items = []
 
     def __init__(self, carte):
