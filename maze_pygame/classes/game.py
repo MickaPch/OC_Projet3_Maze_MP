@@ -15,6 +15,8 @@ class Game:
         """
         Initialize the game parameters
         """
+        pygame.init()           # Initialization of pygame
+
         self.carte = Grid()
         self.carte.initialize_maze(file)
         self.maze = Maze(self.carte)
