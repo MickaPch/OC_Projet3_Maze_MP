@@ -20,6 +20,7 @@ class Grid:
         Transformation du labyrinthe en zone de jeu.
         Création des listes forbidden_tiles et allowed_tiles.
         """
+
         self.forbidden_tiles = []
         self.allowed_tiles = []
         with open(file, 'r') as f:

@@ -10,4 +10,4 @@ Création du jeu en console
 ## 2ème étape :
 Transformer avec pygame
 
-    Statut : à faire
+    Statut : En cours
