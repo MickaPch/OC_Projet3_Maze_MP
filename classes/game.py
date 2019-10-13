@@ -229,6 +229,7 @@ class Game:
                 32)
             dirty_rects.append(ether_position)
             self.bag.ether_picked += 1
+        pygame.display.update(dirty_rects)
         if self.bag.full_items == 1:
             self._screen.blit(
                 self.text_full,
@@ -268,7 +269,7 @@ class Game:
             self._screen.blit(
                 self.rip,
                 (self.guardian.posx*32, self.guardian.posy*32))
-            dirty_rects.append(guardian_position)
+            pygame.display.update(guardian_position)
 
             self._screen.blit(
                 self.floor,
@@ -281,10 +282,8 @@ class Game:
                 self.carte.exit[1]*32,
                 32,
                 32)
-            dirty_rects.append(exit_tile)
+            pygame.display.update(exit_tile)
             self.bag.full_items += 1
-
-        pygame.display.update(dirty_rects)
 
     def on_execute(self):
         """Game"""
@@ -338,7 +337,7 @@ class Game:
             if self.player.position == self.carte.exit:
                 result_font = pygame.font.SysFont("ebrima", 55, bold=1)
                 game_won = result_font.render(
-                    "You've won the game !!!", True, (255, 255, 0))
+                    "You won the game !!!", True, (255, 255, 0))
                 self._screen.blit(
                     game_won,
                     (672 / 2 - game_won.get_width() // 2,
