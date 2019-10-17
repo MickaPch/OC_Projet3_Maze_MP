@@ -8,14 +8,14 @@ class Item:
     """
     list_items = []
 
-    def __init__(self, carte, guardian):
+    def __init__(self, game_map, guardian, player):
         """
-        Position de départ aléatoire dans la liste des cases autorisées
+        Random start position in allowed_podisions
         """
         if Item.list_items == []:
-            allowed_positions = copy.deepcopy(carte.allowed_tiles)
-            allowed_positions.pop(
-                carte.allowed_tiles.index(guardian.position))
+            allowed_positions = copy.deepcopy(game_map.allowed_tiles)
+            del allowed_positions[game_map.allowed_tiles.index(guardian.position)]
+            del allowed_positions[game_map.allowed_tiles.index(game_map.exit)]
             Item.list_items = random.sample(allowed_positions, 3)
         self.position = Item.list_items.pop(0)
         self.posx = self.position[0]

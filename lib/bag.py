@@ -2,7 +2,7 @@ class Bag:
 
     def __init__(self):
         """
-        Au départ : sac vide
+        At start : empty bag
         """
         self.is_needle = False
         self.needle_picked = 0
@@ -15,7 +15,7 @@ class Bag:
 
     def control_bag(self, player, needle, tube, ether):
         """
-        Contrôle si le joueur ramasse un objet
+        Check if player pick an object
         """
         if player.position == needle.position:
             self.is_needle = True
@@ -27,7 +27,7 @@ class Bag:
             self.is_ether = True
             self.ether_picked += 1
 
-        # Contrôle si le sac est plein
+        # Check if bag is full
         if self.is_needle and self.is_tube and self.is_ether:
             self.full = True
             self.full_items += 1
