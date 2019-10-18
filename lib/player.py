@@ -1,8 +1,14 @@
+"""Player class. Control MacGyver moves."""
 import pygame
+from pygame.locals import (
+    K_LEFT, K_RIGHT, K_UP, K_DOWN
+)
 
 
 class Player():
-
+    """
+    MacGyver
+    """
     def __init__(self, game_map):
         """
         Start position
@@ -15,27 +21,30 @@ class Player():
 
     def enter_key(self, game_map):
         """
-        Contrôle si le mouvement est possible ou non.
+        Control if it's possible to move or not.
         """
         key = pygame.key.get_pressed()
-        if key[pygame.K_LEFT]:
+        if key[K_LEFT]:
             test_position = (self.posx - 1, self.posy)
             if test_position in game_map.allowed_tiles:
                 self.rect.move_ip(-32, 0)
-        if key[pygame.K_RIGHT]:
+        if key[K_RIGHT]:
             test_position = (self.posx + 1, self.posy)
             if test_position in game_map.allowed_tiles:
                 self.rect.move_ip(32, 0)
-        if key[pygame.K_UP]:
+        if key[K_UP]:
             test_position = (self.posx, self.posy - 1)
             if test_position in game_map.allowed_tiles:
                 self.rect.move_ip(0, -32)
-        if key[pygame.K_DOWN]:
+        if key[K_DOWN]:
             test_position = (self.posx, self.posy + 1)
             if test_position in game_map.allowed_tiles:
                 self.rect.move_ip(0, 32)
 
     def print_position(self):
+        """
+        Refresh the player position and save previous
+        """
         self.previouspos = self.position
         self.position = (int(self.rect[0] / 32), int(self.rect[1] / 32))
         self.posx = self.position[0]

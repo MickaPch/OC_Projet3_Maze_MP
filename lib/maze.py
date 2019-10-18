@@ -1,3 +1,4 @@
+"""Maze class. Control display of the game."""
 import copy
 import pygame
 from lib.guardian import Guardian
@@ -16,16 +17,11 @@ class Maze():
         """
         self.maze_grid = copy.deepcopy(game_map.grid)
         self.screen = screen
-    
-    def on_init(self, game_map):
-        """
-        Initialize the game parameters
-        """
         self.guardian = Guardian(game_map)
         self.player = Player(game_map)
-        self.needle = Item(game_map, self.guardian, self.player)
-        self.tube = Item(game_map, self.guardian, self.player)
-        self.ether = Item(game_map, self.guardian, self.player)
+        self.needle = Item(game_map, self.guardian)
+        self.tube = Item(game_map, self.guardian)
+        self.ether = Item(game_map, self.guardian)
         self.bag = Bag()
         self.objects_list = [
             game_map,
@@ -40,7 +36,27 @@ class Maze():
         self.item_2 = (8, 21)
         self.item_3 = (10, 21)
         self.bag_items = [self.item_1, self.item_2, self.item_3]
-    
+        self.floor = None
+        self.wall = None
+        self.macgyver = None
+        self.guard = None
+        self.exit_tile = None
+        self.exit_open = None
+        self.needle_img = None
+        self.tube_img = None
+        self.ether_img = None
+        self.empty_bag = None
+        self.item_bag = None
+        self.seringue_img = None
+        self.splash1 = None
+        self.splash2 = None
+        self.splash3 = None
+        self.rip = None
+        self.bag_font = None
+        self.text_full = None
+        self._running = True
+        self.list_guardian_animation = []
+
     def load_image(self, name):
         """
         Load pygame image stored in ressources/ by name only
@@ -48,7 +64,10 @@ class Maze():
         path = 'ressources/' + name + '.png'
         return pygame.image.load(path)
 
-    def blit_item(self, item_to_blit, position, centerx=0, centery=0, convert=True):
+    def blit_item(
+            self, item_to_blit, position,
+            centerx=0, centery=0, convert=True
+    ):
         """
         Blit an image defined by load_image at this position
         For the update of the position, return Rect object
@@ -70,7 +89,6 @@ class Maze():
             32
         )
         return rect_item
-
 
     def init_map(self, game_map):
         """
@@ -122,8 +140,9 @@ class Maze():
         pygame.display.flip()
 
         self._running = True
-    
+
     def death_animation(self):
+        """Animate images at guardian position"""
         self.list_guardian_animation = [
             self.floor,
             self.splash1,
@@ -146,7 +165,8 @@ class Maze():
         previous_position = self.blit_item(self.floor, self.player.previouspos)
         dirty_rects.append(previous_position)
         # Add actual player position
-        current_position = self.blit_item(self.macgyver, self.player.position, 4)
+        current_position = self.blit_item(
+            self.macgyver, self.player.position, 4)
         dirty_rects.append(current_position)
         # Add item if picked
         self.bag.control_bag(self.player, self.needle, self.tube, self.ether)
@@ -196,7 +216,7 @@ class Maze():
         )
         self.blit_item(game_over, game_over_position, convert=False)
         pygame.display.flip()
-    
+
     def win_game(self):
         """
         Display Win message

@@ -1,4 +1,10 @@
+"""Guardian class. Init by position."""
+
+
 class Guardian():
+    """
+    Guardian 1 cell before exit
+    """
     def __init__(self, game_map):
         """
         Initialize guardian position. 1 cell before exit to keep the exit and

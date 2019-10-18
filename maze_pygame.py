@@ -1,15 +1,14 @@
+"""Game function."""
 from lib.game import Game
 
 
 def main():
     """
-    Fonction du jeu
+    Game function.
     """
-    # Création du jeu
-    maze_game = Game()
-    # Initialisation et import de la carte
-    maze_game.on_init('ressources/map.txt')
-    # Boucle de jeu
+    # Game creation
+    maze_game = Game('ressources/map.txt')
+    # Game loop
     maze_game.on_execute()
 
 

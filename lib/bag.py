@@ -1,5 +1,10 @@
-class Bag:
+"""Bag class. Control if items picked."""
 
+
+class Bag:
+    """
+    Control if all items are picked
+    """
     def __init__(self):
         """
         At start : empty bag
